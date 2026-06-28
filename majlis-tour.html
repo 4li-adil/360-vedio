@@ -25,8 +25,8 @@
   <!-- ===================== SIDEBAR ===================== -->
   <aside style="flex:0 0 246px; width:246px; height:100%; background:#141518; border-right:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; padding:26px 0; z-index:30;">
     <div style="padding:0 26px 22px;">
-      <div style="font-size:25px; font-weight:800; letter-spacing:0.14em; line-height:1;">MERIDIAN</div>
-      <div style="font-size:9px; font-weight:600; letter-spacing:0.42em; color:#9cb7ac; margin-top:7px;">STUDIO &nbsp;360</div>
+      <div style="font-size:25px; font-weight:800; letter-spacing:0.14em; line-height:1;">BARAA</div>
+      <div style="font-size:9px; font-weight:600; letter-spacing:0.42em; color:#9cb7ac; margin-top:7px;">ARCHITECTS</div>
       <div style="height:1px; background:rgba(255,255,255,0.08); margin:20px 0 18px;"></div>
       <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; color:rgba(255,255,255,0.92);">LUXURY MAJLIS</div>
       <div style="font-size:11px; font-weight:500; letter-spacing:0.14em; color:rgba(255,255,255,0.42); margin-top:3px;">VIRTUAL TOUR</div>
@@ -60,7 +60,7 @@
     </nav>
 
     <div style="padding:18px 26px 0; font-size:10px; line-height:1.7; letter-spacing:0.08em; color:rgba(255,255,255,0.3);">
-      &copy; 2026 MERIDIAN STUDIO<br>ALL RIGHTS RESERVED
+      &copy; 2026 BARAA ARCHITECTS<br>ALL RIGHTS RESERVED
     </div>
   </aside>
 
@@ -221,7 +221,7 @@
   const panelContent = {
     about: { kicker:'ABOUT', title:'The Majlis', body:'<p>A serene, contemporary living majlis wrapped in warm travertine and walnut. Soft bouclé seating gathers around a sculpted stone table, beneath a cascading canopy of green-glass leaves.</p><p style="margin-top:14px;">This interactive 360&deg; tour lets you explore every corner at your own pace &mdash; drag to look around, jump between viewpoints, or let it auto-rotate.</p>' },
     materials: { kicker:'MATERIALS', title:'Finishes & Materials', body:'<ul style="list-style:none; padding:0; margin:0;"><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Travertine Stone</b><br>Honed wall cladding &amp; sculpted table</li><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Walnut Veneer</b><br>Floor-to-ceiling timber panelling</li><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Sand Bouclé</b><br>Curved lounge upholstery</li><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Hand-blown Glass</b><br>Green-leaf chandelier canopy</li><li style="padding:13px 0;"><b style="color:#fff;">Hand-knotted Rug</b><br>Abstract teal &amp; sand watercolour</li></ul>' },
-    contact: { kicker:'CONTACT', title:'Get in touch', body:'<p style="line-height:2;"><b style="color:#fff;">Email</b><br>hello@meridianstudio.co<br><br><b style="color:#fff;">Phone</b><br>+966 5X XXX XXXX<br><br><b style="color:#fff;">Studio</b><br>Residential Majlis Project<br>Visit by appointment</p>' },
+    contact: { kicker:'CONTACT', title:'Get in touch', body:'<p style="line-height:2;"><b style="color:#fff;">Email</b><br><a href="mailto:4li.adel@gmail.com" style="color:#9cb7ac; text-decoration:none;">4li.adel@gmail.com</a><br><br><b style="color:#fff;">Phone</b><br><a href="tel:+9647800002326" style="color:#fff; text-decoration:none;">+964 780 000 2326</a><br><a href="tel:+9647800004233" style="color:#fff; text-decoration:none;">+964 780 000 4233</a><br><br><b style="color:#fff;">Studio</b><br>BARAA ARCHITECTS<br>Visit by appointment</p>' },
   };
 
   let lon = 140, lat = -2, fov = 96;
@@ -440,6 +440,32 @@
       fov = Math.max(MINFOV, Math.min(MAXFOV, fov + e.deltaY * 0.04));
       if (e.cancelable) e.preventDefault();
     }, { passive:false });
+    // double-click to zoom in toward the clicked point, double-click again to zoom back out
+    let zoomedIn = false;
+    canvas.addEventListener('dblclick', e => {
+      const THREE = window.THREE;
+      anim = null; autoRotate = false; updateAutoUI();
+      if (!zoomedIn) {
+        const rect = canvas.getBoundingClientRect();
+        const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const ndcY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+        const ray = new THREE.Raycaster();
+        ray.setFromCamera({ x: ndcX, y: ndcY }, camera);
+        const hits = mesh ? ray.intersectObject(mesh) : [];
+        let tLon = lon, tLat = lat;
+        if (hits.length) {
+          const p = hits[0].point;
+          const r = Math.sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
+          tLat = 90 - THREE.MathUtils.radToDeg(Math.acos(p.y / r));
+          tLon = THREE.MathUtils.radToDeg(Math.atan2(p.z, p.x));
+        }
+        flyTo(tLon, tLat, Math.max(MINFOV, 48), 0.7);
+        zoomedIn = true;
+      } else {
+        flyTo(lon, lat, scenesData[current].fov, 0.7);
+        zoomedIn = false;
+      }
+    });
   }
 
   function init() {
@@ -510,7 +536,7 @@
       const id = b.dataset.nav;
       setNavActive(id);
       if (id === 'tour') { closePanel(); }
-      else if (id === 'floor') { $('minimapRef').style.display = 'block'; setNavActive('tour'); }
+      else if (id === 'floor') { const m = $('minimapRef'); m.style.display = (m.style.display === 'none') ? 'block' : 'none'; setNavActive('tour'); }
       else if (id === 'gallery') openGallery();
       else openPanel(id);
     });
