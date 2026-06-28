@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Studio 360 — Virtual Tours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; min-height:100%; background:#0c0d10; font-family:'Manrope',system-ui,sans-serif; color:#fff; }
+  * { box-sizing:border-box; }
+  .card:hover { transform:translateY(-4px); border-color:rgba(255,255,255,0.18) !important; }
+  .card { transition:transform .2s ease, border-color .2s ease; }
+  .card img { transition:transform .4s ease; }
+  .card:hover img { transform:scale(1.04); }
+</style>
+</head>
+<body>
+<div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px;">
+  <div style="text-align:center; margin-bottom:52px;">
+    <div style="font-size:32px; font-weight:800; letter-spacing:0.14em;">MERIDIAN</div>
+    <div style="font-size:10px; font-weight:600; letter-spacing:0.42em; color:#c89b62; margin-top:8px;">STUDIO &nbsp;360</div>
+    <div style="height:1px; background:rgba(255,255,255,0.08); margin:28px auto; max-width:200px;"></div>
+    <div style="font-size:13px; font-weight:500; letter-spacing:0.12em; color:rgba(255,255,255,0.5);">SELECT A VIRTUAL TOUR</div>
+  </div>
+
+  <div style="display:flex; gap:28px; flex-wrap:wrap; justify-content:center; max-width:900px;">
+
+    <a href="virtual-tour.html" class="card" style="text-decoration:none; color:inherit; width:380px; border:1px solid rgba(255,255,255,0.09); border-radius:18px; overflow:hidden; background:#141518; cursor:pointer; display:block;">
+      <div style="overflow:hidden; height:220px;">
+        <img src="assets/thumb_overall.png" alt="Travel Agency Office" style="width:100%; height:100%; object-fit:cover; display:block;">
+      </div>
+      <div style="padding:24px;">
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.3em; color:#c89b62; margin-bottom:10px;">COMMERCIAL</div>
+        <div style="font-size:20px; font-weight:800; letter-spacing:0.02em; margin-bottom:8px;">Travel Agency Office</div>
+        <div style="font-size:13px; line-height:1.6; color:rgba(255,255,255,0.55);">A contemporary lounge with oak flooring, tan leather seating and a carved timber world-map feature wall.</div>
+        <div style="margin-top:20px; display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:0.1em; color:#c89b62;">
+          <span>EXPLORE TOUR</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </a>
+
+    <a href="majlis-tour.html" class="card" style="text-decoration:none; color:inherit; width:380px; border:1px solid rgba(255,255,255,0.09); border-radius:18px; overflow:hidden; background:#141518; cursor:pointer; display:block;">
+      <div style="overflow:hidden; height:220px;">
+        <img src="assets/mthumb_entrance.png" alt="Luxury Majlis" style="width:100%; height:100%; object-fit:cover; display:block;">
+      </div>
+      <div style="padding:24px;">
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.3em; color:#9cb7ac; margin-bottom:10px;">RESIDENTIAL</div>
+        <div style="font-size:20px; font-weight:800; letter-spacing:0.02em; margin-bottom:8px;">Luxury Majlis</div>
+        <div style="font-size:13px; line-height:1.6; color:rgba(255,255,255,0.55);">A serene living majlis wrapped in travertine and walnut, with bouclé seating beneath a green-glass chandelier.</div>
+        <div style="margin-top:20px; display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:0.1em; color:#9cb7ac;">
+          <span>EXPLORE TOUR</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <div style="margin-top:52px; font-size:10px; letter-spacing:0.08em; color:rgba(255,255,255,0.25);">&copy; 2026 MERIDIAN STUDIO &mdash; ALL RIGHTS RESERVED</div>
+</div>
+</body>
+</html>

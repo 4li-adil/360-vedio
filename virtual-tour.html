@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Agency Office — Virtual Tour</title>
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#0c0d10; overflow:hidden; }
+  * { box-sizing:border-box; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.16); border-radius:8px; }
+  @keyframes vtspin { to { transform:rotate(360deg); } }
+  @keyframes hsPulse { 0% { transform:translate(-50%,-50%) scale(0.7); opacity:0.9; } 70% { transform:translate(-50%,-50%) scale(1.9); opacity:0; } 100% { opacity:0; } }
+  @keyframes bob { 0%,100% { transform:translate(-50%,0); } 50% { transform:translate(-50%,7px); } }
+  [data-noscroll]::-webkit-scrollbar { height:0; width:0; display:none; }
+  [data-noscroll] { scrollbar-width:none; }
+</style>
+</head>
+<body>
+<div id="root" style="position:relative; display:flex; width:100vw; height:100vh; background:#0c0d10; font-family:'Manrope',system-ui,sans-serif; color:#fff; overflow:hidden; user-select:none;">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside style="flex:0 0 246px; width:246px; height:100%; background:#141518; border-right:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; padding:26px 0; z-index:30;">
+    <div style="padding:0 26px 22px;">
+      <div style="font-size:25px; font-weight:800; letter-spacing:0.14em; line-height:1;">MERIDIAN</div>
+      <div style="font-size:9px; font-weight:600; letter-spacing:0.42em; color:#c89b62; margin-top:7px;">STUDIO &nbsp;360</div>
+      <div style="height:1px; background:rgba(255,255,255,0.08); margin:20px 0 18px;"></div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; color:rgba(255,255,255,0.92);">TRAVEL AGENCY OFFICE</div>
+      <div style="font-size:11px; font-weight:500; letter-spacing:0.14em; color:rgba(255,255,255,0.42); margin-top:3px;">VIRTUAL TOUR</div>
+    </div>
+
+    <nav id="navRef" style="display:flex; flex-direction:column; gap:3px; padding:14px 14px 0; flex:1;">
+      <button data-nav="tour" style="display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:11px 14px; border:none; border-radius:10px; background:rgba(255,255,255,0.07); color:#fff; font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+        <span>Tour</span>
+      </button>
+      <button data-nav="gallery" style="display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:11px 14px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.6); font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M21 16l-5-5L5 20"/></svg>
+        <span>Gallery</span>
+      </button>
+      <button data-nav="floor" style="display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:11px 14px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.6); font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 10h7V3M14 21v-7h7"/></svg>
+        <span>Floor Plan</span>
+      </button>
+      <button data-nav="materials" style="display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:11px 14px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.6); font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
+        <span>Materials</span>
+      </button>
+      <button data-nav="about" style="display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:11px 14px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.6); font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+        <span>About</span>
+      </button>
+      <button data-nav="contact" style="display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:11px 14px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.6); font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
+        <span>Contact</span>
+      </button>
+    </nav>
+
+    <div style="padding:18px 26px 0; font-size:10px; line-height:1.7; letter-spacing:0.08em; color:rgba(255,255,255,0.3);">
+      &copy; 2026 MERIDIAN STUDIO<br>ALL RIGHTS RESERVED
+    </div>
+  </aside>
+
+  <!-- ===================== VIEWPORT ===================== -->
+  <main id="viewportRef" style="position:relative; flex:1; height:100%; overflow:hidden; background:#0c0d10;">
+    <canvas id="canvasRef" style="display:block; width:100%; height:100%; cursor:grab;"></canvas>
+
+    <!-- top: scene selector -->
+    <div style="position:absolute; top:22px; left:50%; transform:translateX(-50%); z-index:20;">
+      <button id="dropdownTrigger" style="display:flex; align-items:center; gap:14px; padding:9px 16px 9px 10px; border:1px solid rgba(255,255,255,0.1); border-radius:13px; background:rgba(16,17,20,0.72); backdrop-filter:blur(14px); color:#fff; font-family:inherit; cursor:pointer; min-width:268px; box-shadow:0 10px 30px rgba(0,0,0,0.35);">
+        <span id="pillNumRef" style="display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:9px; background:#c89b62; color:#19140c; font-size:15px; font-weight:800; letter-spacing:0.02em;">01</span>
+        <span style="flex:1; text-align:left; line-height:1.25;">
+          <span id="pillNameRef" style="display:block; font-size:14px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;">Entrance</span>
+          <span id="pillSubRef" style="display:block; font-size:11px; font-weight:500; color:rgba(255,255,255,0.5);">Welcome</span>
+        </span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="opacity:0.7;"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="dropdownRef" data-noscroll="1" style="display:none; margin-top:8px; max-height:340px; overflow-y:auto; padding:7px; border:1px solid rgba(255,255,255,0.1); border-radius:13px; background:rgba(16,17,20,0.94); backdrop-filter:blur(14px); box-shadow:0 18px 50px rgba(0,0,0,0.5);">
+      </div>
+    </div>
+
+    <!-- top right -->
+    <div style="position:absolute; top:22px; right:22px; z-index:20; display:flex; gap:10px;">
+      <button id="fullscreenBtn" title="Fullscreen" style="width:42px; height:42px; border:1px solid rgba(255,255,255,0.1); border-radius:11px; background:rgba(16,17,20,0.72); backdrop-filter:blur(14px); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M21 16v4a1 1 0 0 1-1 1h-4M3 16v4a1 1 0 0 0 1 1h4"/></svg>
+      </button>
+      <button title="VR" style="width:42px; height:42px; border:1px solid rgba(255,255,255,0.1); border-radius:11px; background:rgba(16,17,20,0.72); backdrop-filter:blur(14px); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="10" rx="3"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/></svg>
+      </button>
+    </div>
+
+    <!-- hotspots layer -->
+    <div id="hotspotLayerRef" style="position:absolute; inset:0; z-index:14; pointer-events:none;">
+      <button id="hs0Ref" data-scene="2" style="position:absolute; display:none; pointer-events:auto; width:34px; height:34px; border:none; background:transparent; cursor:pointer; transform:translate(-50%,-50%);">
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; border:2px solid rgba(255,255,255,0.9); box-shadow:0 0 14px rgba(0,0,0,0.6);"></span>
+        <span style="position:absolute; left:50%; top:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border-radius:50%; background:#fff;"></span>
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.55); animation:hsPulse 2.4s ease-out infinite;"></span>
+      </button>
+      <button id="hs1Ref" data-scene="3" style="position:absolute; display:none; pointer-events:auto; width:34px; height:34px; border:none; background:transparent; cursor:pointer; transform:translate(-50%,-50%);">
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; border:2px solid rgba(255,255,255,0.9); box-shadow:0 0 14px rgba(0,0,0,0.6);"></span>
+        <span style="position:absolute; left:50%; top:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border-radius:50%; background:#fff;"></span>
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.55); animation:hsPulse 2.4s ease-out infinite; animation-delay:0.5s;"></span>
+      </button>
+      <button id="hs2Ref" data-scene="4" style="position:absolute; display:none; pointer-events:auto; width:34px; height:34px; border:none; background:transparent; cursor:pointer; transform:translate(-50%,-50%);">
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; border:2px solid rgba(255,255,255,0.9); box-shadow:0 0 14px rgba(0,0,0,0.6);"></span>
+        <span style="position:absolute; left:50%; top:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border-radius:50%; background:#fff;"></span>
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.55); animation:hsPulse 2.4s ease-out infinite; animation-delay:1s;"></span>
+      </button>
+      <button id="hs3Ref" data-scene="7" style="position:absolute; display:none; pointer-events:auto; width:34px; height:34px; border:none; background:transparent; cursor:pointer; transform:translate(-50%,-50%);">
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; border:2px solid rgba(255,255,255,0.9); box-shadow:0 0 14px rgba(0,0,0,0.6);"></span>
+        <span style="position:absolute; left:50%; top:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border-radius:50%; background:#fff;"></span>
+        <span style="position:absolute; left:50%; top:50%; width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.55); animation:hsPulse 2.4s ease-out infinite; animation-delay:1.5s;"></span>
+      </button>
+    </div>
+
+    <!-- forward hint -->
+    <div style="position:absolute; left:50%; bottom:212px; transform:translateX(-50%); z-index:12; pointer-events:none;">
+      <div style="width:54px; height:54px; border:2px solid rgba(255,255,255,0.55); border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.18); animation:bob 2.6s ease-in-out infinite;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.4"><path d="M6 14l6-6 6 6"/></svg>
+      </div>
+    </div>
+
+    <!-- floor plan minimap -->
+    <div id="minimapRef" style="position:absolute; left:22px; bottom:120px; width:236px; z-index:18; border:1px solid rgba(255,255,255,0.1); border-radius:15px; background:rgba(16,17,20,0.82); backdrop-filter:blur(14px); padding:14px; box-shadow:0 16px 40px rgba(0,0,0,0.4);">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;">
+        <span style="font-size:10px; font-weight:800; letter-spacing:0.22em; color:rgba(255,255,255,0.85);">FLOOR PLAN</span>
+        <button id="minimapCloseBtn" style="border:none; background:transparent; color:rgba(255,255,255,0.5); cursor:pointer; font-size:15px; line-height:1; padding:2px;">&#10005;</button>
+      </div>
+      <div id="planRef" style="position:relative; width:208px; height:150px; border-radius:9px; background:repeating-linear-gradient(0deg,rgba(255,255,255,0.03) 0 13px,transparent 13px 26px),repeating-linear-gradient(90deg,rgba(255,255,255,0.03) 0 13px,transparent 13px 26px),rgba(255,255,255,0.02);">
+        <!-- room outline -->
+        <div style="position:absolute; inset:14px; border:1.5px solid rgba(255,255,255,0.28); border-radius:3px;"></div>
+        <!-- furniture hints -->
+        <div style="position:absolute; left:50%; top:20px; transform:translateX(-50%); width:62px; height:13px; border-radius:3px; background:rgba(255,255,255,0.13);"></div>
+        <div style="position:absolute; right:20px; top:46px; width:13px; height:58px; border-radius:3px; background:rgba(255,255,255,0.13);"></div>
+        <div style="position:absolute; left:20px; top:50px; width:13px; height:42px; border-radius:3px; background:rgba(255,255,255,0.13);"></div>
+        <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:22px; height:22px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.18);"></div>
+        <!-- viewer + cone -->
+        <div id="coneRef" style="position:absolute; left:50%; top:50%; width:0; height:0; transform:translate(-50%,-50%) rotate(0deg); transform-origin:center;">
+          <div style="position:absolute; left:-26px; top:-58px; width:52px; height:58px; background:radial-gradient(ellipse at 50% 100%, rgba(200,155,98,0.55) 0%, transparent 72%); clip-path:polygon(50% 100%, 0 0, 100% 0); border-radius:4px;"></div>
+        </div>
+        <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:11px; height:11px; border-radius:50%; background:#c89b62; border:2px solid #fff; z-index:3;"></div>
+      </div>
+    </div>
+
+    <!-- thumbnail rail -->
+    <div id="railRef" data-noscroll="1" style="position:absolute; left:50%; bottom:88px; transform:translateX(-50%); z-index:16; display:flex; gap:8px; max-width:calc(100% - 320px); overflow-x:auto; padding:6px; border:1px solid rgba(255,255,255,0.09); border-radius:14px; background:rgba(16,17,20,0.72); backdrop-filter:blur(14px); box-shadow:0 14px 40px rgba(0,0,0,0.4);">
+    </div>
+
+    <!-- bottom control bar -->
+    <div style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%); z-index:16; display:flex; align-items:center; gap:5px; padding:8px 10px; border:1px solid rgba(255,255,255,0.09); border-radius:15px; background:rgba(16,17,20,0.82); backdrop-filter:blur(14px); box-shadow:0 14px 40px rgba(0,0,0,0.45);">
+      <button id="nudgeUp" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+      <button id="nudgeLeft" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
+      <button id="nudgeRight" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button id="nudgeDown" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+      <span style="width:1px; height:24px; background:rgba(255,255,255,0.12); margin:0 4px;"></span>
+      <button id="zoomIn" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button id="zoomOut" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/></svg></button>
+      <button id="infoBtn" style="width:40px; height:40px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
+      <span style="width:1px; height:24px; background:rgba(255,255,255,0.12); margin:0 4px;"></span>
+      <button id="autoBtnRef" style="display:flex; align-items:center; gap:9px; height:40px; padding:0 16px 0 13px; border:none; border-radius:10px; background:transparent; color:rgba(255,255,255,0.85); cursor:pointer; font-family:inherit; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">
+        <svg id="autoIconRef" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>
+        <span id="autoLabelRef">AUTO ROTATE</span>
+      </button>
+    </div>
+
+    <!-- music -->
+    <button id="musicBtnRef" style="position:absolute; right:22px; bottom:20px; z-index:16; width:46px; height:46px; border:1px solid rgba(255,255,255,0.09); border-radius:13px; background:rgba(16,17,20,0.82); backdrop-filter:blur(14px); color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+    </button>
+
+    <!-- slide-in info / gallery panel -->
+    <div id="panelWrapRef" style="position:absolute; inset:0; z-index:40; display:none;">
+      <div id="panelOverlay" style="position:absolute; inset:0; background:rgba(8,9,11,0.55); backdrop-filter:blur(3px);"></div>
+      <div style="position:absolute; top:0; right:0; width:420px; max-width:88%; height:100%; background:#141518; border-left:1px solid rgba(255,255,255,0.08); box-shadow:-30px 0 80px rgba(0,0,0,0.5); padding:30px 30px 30px; overflow-y:auto;">
+        <button id="panelCloseBtn" style="position:absolute; top:22px; right:22px; width:34px; height:34px; border:1px solid rgba(255,255,255,0.12); border-radius:9px; background:transparent; color:#fff; cursor:pointer; font-size:15px;">&#10005;</button>
+        <div id="panelKickerRef" style="font-size:10px; font-weight:700; letter-spacing:0.3em; color:#c89b62; margin-bottom:10px;">ABOUT</div>
+        <div id="panelTitleRef" style="font-size:26px; font-weight:800; letter-spacing:-0.01em; margin-bottom:18px;">Title</div>
+        <div id="panelBodyRef" style="font-size:13.5px; line-height:1.7; color:rgba(255,255,255,0.65);"></div>
+      </div>
+    </div>
+
+    <!-- drag hint -->
+    <div id="dragHintRef" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:13; display:flex; align-items:center; gap:11px; padding:11px 20px; border-radius:40px; background:rgba(16,17,20,0.78); backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.1); font-size:13px; font-weight:600; letter-spacing:0.04em; color:rgba(255,255,255,0.92); pointer-events:none; transition:opacity .6s ease;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11V6a2 2 0 1 1 4 0v5M13 7a2 2 0 1 1 4 0v6M5 11a2 2 0 1 1 4 0M17 9a2 2 0 1 1 4 0v4a7 7 0 0 1-7 7h-2a7 7 0 0 1-5-2l-3-4"/></svg>
+      <span>Drag to look around</span>
+    </div>
+
+    <!-- loader -->
+    <div id="loaderRef" style="position:absolute; inset:0; display:flex; flex-direction:column; gap:18px; align-items:center; justify-content:center; background:#0c0d10; z-index:60; transition:opacity .6s ease;">
+      <div style="width:42px; height:42px; border:3px solid rgba(255,255,255,0.16); border-top-color:#fff; border-radius:50%; animation:vtspin 0.9s linear infinite;"></div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.28em; color:rgba(255,255,255,0.5);">LOADING TOUR</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  const ACCENT = '#c89b62';
+  const ACCENT_SOFT = 'rgba(200,155,98,0.55)';
+  const TEXTURE = 'assets/room360_master.png';
+  const THUMB_PREFIX = 'assets/thumb_';
+
+  const scenesData = [
+    { n:'01', label:'Entrance',     sub:'Welcome',        lon:150, lat:-2,  fov:96, file:'entrance' },
+    { n:'02', label:'Reception',    sub:'Front desk',     lon:150, lat:-3,  fov:62, file:'reception' },
+    { n:'03', label:'Reception Desk', sub:'Check-in',     lon:150, lat:0,   fov:48, file:'desk' },
+    { n:'04', label:'Client Seating', sub:'Lounge sofa',  lon:258, lat:2,   fov:74, file:'seating' },
+    { n:'05', label:'Inspiration',  sub:'Plan & book',    lon:88,  lat:-3,  fov:60, file:'inspiration' },
+    { n:'06', label:'Coffee Table', sub:'Relax',          lon:169, lat:-24, fov:74, file:'coffee' },
+    { n:'07', label:'Sacred Journeys', sub:'Umrah & Hajj',lon:300, lat:-3,  fov:58, file:'sacred' },
+    { n:'08', label:'Overall View', sub:'The space',      lon:35,  lat:0,   fov:100, file:'overall' },
+  ];
+
+  const hotspots = [
+    { id:'hs0Ref', lon:150, lat:-4 },
+    { id:'hs1Ref', lon:250, lat:-6 },
+    { id:'hs2Ref', lon:90,  lat:-5 },
+    { id:'hs3Ref', lon:35,  lat:-6 },
+  ];
+
+  const panelContent = {
+    about: { kicker:'ABOUT', title:'Travel Agency Office', body:'<p>A warm, contemporary travel-agency lounge designed around the idea of discovery. Exposed industrial ceilings meet soft tan leather seating, a glowing timber world-map and a curated inspiration wall.</p><p style="margin-top:14px;">This interactive 360&deg; tour lets you explore every corner of the space at your own pace &mdash; drag to look around, jump between viewpoints, or let it auto-rotate.</p>' },
+    materials: { kicker:'MATERIALS', title:'Finishes & Materials', body:'<ul style="list-style:none; padding:0; margin:0;"><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Natural Oak Flooring</b><br>Wide-plank engineered timber</li><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Tan Aniline Leather</b><br>Full-grain lounge upholstery</li><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Brushed Brass</b><br>Accent fixtures &amp; globe details</li><li style="padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><b style="color:#fff;">Micro-cement</b><br>Reception desk &amp; column cladding</li><li style="padding:13px 0;"><b style="color:#fff;">Carved Timber Map</b><br>Backlit world-map feature wall</li></ul>' },
+    contact: { kicker:'CONTACT', title:'Get in touch', body:'<p style="line-height:2;"><b style="color:#fff;">Email</b><br>hello@meridianstudio.co<br><br><b style="color:#fff;">Phone</b><br>+966 5X XXX XXXX<br><br><b style="color:#fff;">Studio</b><br>Travel Agency Office Project<br>Visit by appointment</p>' },
+  };
+
+  // State
+  let lon = 150, lat = -2, fov = 96;
+  let vLon = 0, vLat = 0;
+  let dragging = false, autoRotate = false, musicOn = false;
+  let anim = null, raf = null, current = 0;
+  const MINFOV = 42, MAXFOV = 102;
+  let scene3, camera, renderer, mesh;
+
+  // DOM refs
+  const $ = id => document.getElementById(id);
+  const viewport = $('viewportRef');
+  const canvas = $('canvasRef');
+
+  function buildDropdown() {
+    const dd = $('dropdownRef');
+    dd.innerHTML = '';
+    scenesData.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.setAttribute('data-scene', String(i));
+      b.style.cssText = 'display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:8px 10px; border:none; border-radius:9px; background:transparent; color:#fff; font-family:inherit; cursor:pointer;';
+      b.innerHTML = `<span style="width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:rgba(255,255,255,0.65);">${s.n}</span><span style="font-size:13px;font-weight:600;letter-spacing:0.03em;">${s.label}</span>`;
+      dd.appendChild(b);
+    });
+  }
+
+  function buildRail() {
+    const rail = $('railRef');
+    rail.innerHTML = '';
+    scenesData.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.setAttribute('data-scene', String(i));
+      b.style.cssText = 'position:relative; flex:0 0 auto; width:118px; height:70px; padding:0; border:2px solid transparent; border-radius:9px; overflow:hidden; cursor:pointer; background:#222;';
+      const img = document.createElement('img');
+      img.src = THUMB_PREFIX + s.file + '.png'; img.alt = s.label;
+      img.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
+      const grad = document.createElement('span');
+      grad.style.cssText = 'position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0) 58%);';
+      const lbl = document.createElement('span');
+      lbl.textContent = s.n + ' ' + s.label;
+      lbl.style.cssText = 'position:absolute; left:7px; bottom:6px; right:6px; text-align:left; font-size:9px; font-weight:700; letter-spacing:0.05em; color:#fff; line-height:1.1; text-transform:uppercase;';
+      b.appendChild(img); b.appendChild(grad); b.appendChild(lbl);
+      rail.appendChild(b);
+    });
+  }
+
+  function positionPlanDots() {
+    const plan = $('planRef');
+    plan.querySelectorAll('[data-scene]').forEach(n => n.remove());
+    const cx = 104, cy = 75, rx = 80, ry = 56;
+    scenesData.forEach((s, i) => {
+      const a = ((s.lon - 150) % 360 + 360) % 360;
+      const rad = a * Math.PI / 180;
+      const x = cx + rx * Math.sin(rad);
+      const y = cy - ry * Math.cos(rad);
+      const b = document.createElement('button');
+      b.setAttribute('data-scene', String(i));
+      b.textContent = s.n.replace(/^0/, '');
+      b.style.cssText = 'position:absolute; left:' + x + 'px; top:' + y + 'px; transform:translate(-50%,-50%); width:20px; height:20px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.3); background:rgba(16,17,20,0.9); color:rgba(255,255,255,0.7); font-size:9.5px; font-weight:800; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:4; padding:0;';
+      plan.appendChild(b);
+    });
+  }
+
+  function easeInOut(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2; }
+
+  function clampLat() { lat = Math.max(-78, Math.min(78, lat)); }
+
+  function flyTo(toLon, toLat, toFov, dur) {
+    let from = ((lon % 360) + 360) % 360;
+    let to = ((toLon % 360) + 360) % 360;
+    let d = to - from;
+    if (d > 180) d -= 360; if (d < -180) d += 360;
+    anim = { t:0, dur: dur || 1.1, from:{ lon, lat, fov }, to:{ lon: lon + d, lat: toLat, fov: toFov } };
+    autoRotate = false; updateAutoUI();
+  }
+
+  function selectScene(i) {
+    if (i < 0 || i >= scenesData.length) return;
+    current = i;
+    const s = scenesData[i];
+    flyTo(s.lon, s.lat, s.fov, 1.15);
+    updateActiveUI();
+  }
+
+  function updateActiveUI() {
+    const s = scenesData[current];
+    $('pillNumRef').textContent = s.n;
+    $('pillNameRef').textContent = s.label;
+    $('pillSubRef').textContent = s.sub;
+    $('railRef').querySelectorAll('[data-scene]').forEach(b => {
+      const on = parseInt(b.dataset.scene, 10) === current;
+      b.style.borderColor = on ? ACCENT : 'transparent';
+      b.style.opacity = on ? '1' : '0.82';
+    });
+    $('dropdownRef').querySelectorAll('[data-scene]').forEach(b => {
+      const on = parseInt(b.dataset.scene, 10) === current;
+      b.style.background = on ? 'rgba(255,255,255,0.08)' : 'transparent';
+    });
+    $('planRef').querySelectorAll('[data-scene]').forEach(b => {
+      const on = parseInt(b.dataset.scene, 10) === current;
+      b.style.background = on ? ACCENT : 'rgba(16,17,20,0.9)';
+      b.style.color = on ? '#19140c' : 'rgba(255,255,255,0.7)';
+      b.style.borderColor = on ? ACCENT : 'rgba(255,255,255,0.3)';
+    });
+  }
+
+  function updateAutoUI() {
+    const ic = $('autoIconRef'), lb = $('autoLabelRef'), bt = $('autoBtnRef');
+    if (lb) lb.textContent = autoRotate ? 'STOP' : 'AUTO ROTATE';
+    if (ic) ic.innerHTML = autoRotate ? '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>' : '<path d="M8 5v14l11-7z"/>';
+    if (bt) { bt.style.background = autoRotate ? ACCENT : 'transparent'; bt.style.color = autoRotate ? '#19140c' : 'rgba(255,255,255,0.85)'; }
+  }
+
+  function updateCamera() {
+    const THREE = window.THREE;
+    const phi = THREE.MathUtils.degToRad(90 - lat);
+    const theta = THREE.MathUtils.degToRad(lon);
+    const tx = 500 * Math.sin(phi) * Math.cos(theta);
+    const ty = 500 * Math.cos(phi);
+    const tz = 500 * Math.sin(phi) * Math.sin(theta);
+    camera.fov = fov;
+    camera.updateProjectionMatrix();
+    camera.lookAt(tx, ty, tz);
+  }
+
+  function dirVec(dlon, dlat) {
+    const THREE = window.THREE;
+    const phi = THREE.MathUtils.degToRad(90 - dlat);
+    const theta = THREE.MathUtils.degToRad(dlon);
+    return new THREE.Vector3(Math.sin(phi)*Math.cos(theta), Math.cos(phi), Math.sin(phi)*Math.sin(theta));
+  }
+
+  function updateHotspots() {
+    const THREE = window.THREE;
+    const w = viewport.clientWidth, h = viewport.clientHeight;
+    const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+    hotspots.forEach(hs => {
+      const el = $(hs.id); if (!el) return;
+      const dir = dirVec(hs.lon, hs.lat);
+      if (fwd.dot(dir) < 0.28) { el.style.display = 'none'; return; }
+      const v = dir.clone().multiplyScalar(100).project(camera);
+      el.style.display = 'block';
+      el.style.left = ((v.x * 0.5 + 0.5) * w) + 'px';
+      el.style.top = ((-v.y * 0.5 + 0.5) * h) + 'px';
+    });
+  }
+
+  function updateCone() {
+    const cone = $('coneRef'); if (!cone) return;
+    const a = ((lon - 150) % 360 + 360) % 360;
+    cone.style.transform = 'translate(-50%,-50%) rotate(' + a + 'deg)';
+  }
+
+  function step() {
+    if (anim) {
+      anim.t = Math.min(1, anim.t + 1 / (anim.dur * 60));
+      const e = easeInOut(anim.t);
+      lon = anim.from.lon + (anim.to.lon - anim.from.lon) * e;
+      lat = anim.from.lat + (anim.to.lat - anim.from.lat) * e;
+      fov = anim.from.fov + (anim.to.fov - anim.from.fov) * e;
+      if (anim.t >= 1) anim = null;
+    } else if (!dragging) {
+      if (autoRotate) {
+        lon += 0.06;
+      } else {
+        lon += vLon; lat += vLat;
+        vLon *= 0.92; vLat *= 0.92;
+        if (Math.abs(vLon) < 0.002) vLon = 0;
+        if (Math.abs(vLat) < 0.002) vLat = 0;
+        clampLat();
+      }
+    }
+    updateCamera();
+    renderer.render(scene3, camera);
+    updateHotspots();
+    updateCone();
+  }
+
+  function startLoop() {
+    const tick = () => { raf = requestAnimationFrame(tick); step(); };
+    raf = requestAnimationFrame(tick);
+  }
+
+  function onResize() {
+    if (!renderer) return;
+    const w = viewport.clientWidth, h = viewport.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  function attachInput() {
+    let px = 0, py = 0;
+    const down = e => {
+      dragging = true; anim = null; autoRotate = false; updateAutoUI();
+      const p = e.touches ? e.touches[0] : e;
+      px = p.clientX; py = p.clientY; vLon = 0; vLat = 0;
+      canvas.style.cursor = 'grabbing';
+      const h = $('dragHintRef'); if (h) h.style.opacity = '0';
+    };
+    const move = e => {
+      if (!dragging) return;
+      const p = e.touches ? e.touches[0] : e;
+      const dx = p.clientX - px, dy = p.clientY - py;
+      px = p.clientX; py = p.clientY;
+      const k = fov / 800;
+      vLon = -dx * k; vLat = dy * k;
+      lon += vLon; lat += vLat;
+      clampLat();
+      if (e.cancelable) e.preventDefault();
+    };
+    const up = () => { dragging = false; canvas.style.cursor = 'grab'; };
+    canvas.addEventListener('mousedown', down);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    canvas.addEventListener('touchstart', down, { passive:true });
+    canvas.addEventListener('touchmove', move, { passive:false });
+    window.addEventListener('touchend', up);
+    canvas.addEventListener('wheel', e => {
+      anim = null;
+      fov = Math.max(MINFOV, Math.min(MAXFOV, fov + e.deltaY * 0.04));
+      if (e.cancelable) e.preventDefault();
+    }, { passive:false });
+  }
+
+  function init() {
+    const THREE = window.THREE;
+    scene3 = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 1100);
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:true, preserveDrawingBuffer:true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const geo = new THREE.SphereGeometry(500, 96, 64);
+    geo.scale(-1, 1, 1);
+    new THREE.TextureLoader().load(TEXTURE, tex => {
+      tex.minFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
+      mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: tex }));
+      scene3.add(mesh);
+      onResize();
+      attachInput();
+      positionPlanDots();
+      buildRail();
+      buildDropdown();
+      updateActiveUI();
+      // fade loader
+      const loader = $('loaderRef');
+      loader.style.opacity = '0';
+      setTimeout(() => { loader.style.display = 'none'; }, 600);
+      setTimeout(() => { const h = $('dragHintRef'); if (h) h.style.opacity = '0'; }, 3600);
+      startLoop();
+    });
+  }
+
+  // Panel helpers
+  function openPanel(id) {
+    const c = panelContent[id]; if (!c) return;
+    $('panelKickerRef').textContent = c.kicker;
+    $('panelTitleRef').textContent = c.title;
+    $('panelBodyRef').innerHTML = c.body;
+    $('panelWrapRef').style.display = 'block';
+  }
+  function closePanel() {
+    $('panelWrapRef').style.display = 'none';
+    setNavActive('tour');
+  }
+  function openGallery() {
+    $('panelKickerRef').textContent = 'GALLERY';
+    $('panelTitleRef').textContent = 'All Viewpoints';
+    let html = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">';
+    scenesData.forEach((s, i) => {
+      html += `<button data-gallery="${i}" style="position:relative;padding:0;border:1px solid rgba(255,255,255,0.1);border-radius:11px;overflow:hidden;cursor:pointer;background:#222;aspect-ratio:16/10;"><img src="${THUMB_PREFIX}${s.file}.png" style="width:100%;height:100%;object-fit:cover;display:block;"/><span style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent 60%);"></span><span style="position:absolute;left:9px;bottom:8px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#fff;text-transform:uppercase;">${s.n} ${s.label}</span></button>`;
+    });
+    html += '</div>';
+    const body = $('panelBodyRef');
+    body.innerHTML = html;
+    body.querySelectorAll('[data-gallery]').forEach(b => b.addEventListener('click', () => {
+      selectScene(parseInt(b.dataset.gallery, 10)); closePanel(); setNavActive('tour');
+    }));
+    $('panelWrapRef').style.display = 'block';
+  }
+  function setNavActive(id) {
+    $('navRef').querySelectorAll('[data-nav]').forEach(n => {
+      const on = n.dataset.nav === id;
+      n.style.background = on ? 'rgba(255,255,255,0.07)' : 'transparent';
+      n.style.color = on ? '#fff' : 'rgba(255,255,255,0.6)';
+    });
+  }
+
+  // Wire up events
+  document.addEventListener('DOMContentLoaded', () => {
+    // nav
+    $('navRef').addEventListener('click', e => {
+      const b = e.target.closest('[data-nav]'); if (!b) return;
+      const id = b.dataset.nav;
+      setNavActive(id);
+      if (id === 'tour') { closePanel(); }
+      else if (id === 'floor') { $('minimapRef').style.display = 'block'; setNavActive('tour'); }
+      else if (id === 'gallery') openGallery();
+      else openPanel(id);
+    });
+    // rail & plan clicks
+    const sceneClick = e => {
+      const b = e.target.closest('[data-scene]'); if (!b) return;
+      selectScene(parseInt(b.dataset.scene, 10));
+      $('dropdownRef').style.display = 'none';
+    };
+    $('railRef').addEventListener('click', sceneClick);
+    $('planRef').addEventListener('click', sceneClick);
+    $('dropdownRef').addEventListener('click', sceneClick);
+    // hotspots
+    document.getElementById('hotspotLayerRef').addEventListener('click', e => {
+      const b = e.target.closest('[data-scene]'); if (!b) return;
+      selectScene(parseInt(b.dataset.scene, 10));
+    });
+    // dropdown toggle
+    $('dropdownTrigger').addEventListener('click', () => {
+      const dd = $('dropdownRef');
+      dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+    });
+    // controls
+    $('fullscreenBtn').addEventListener('click', () => {
+      const el = $('root');
+      if (!document.fullscreenElement) { if (el.requestFullscreen) el.requestFullscreen(); }
+      else { if (document.exitFullscreen) document.exitFullscreen(); }
+    });
+    $('minimapCloseBtn').addEventListener('click', () => { $('minimapRef').style.display = 'none'; });
+    $('nudgeUp').addEventListener('click', () => flyTo(lon, lat + 14, fov, 0.6));
+    $('nudgeDown').addEventListener('click', () => flyTo(lon, lat - 14, fov, 0.6));
+    $('nudgeLeft').addEventListener('click', () => flyTo(lon - 26, lat, fov, 0.6));
+    $('nudgeRight').addEventListener('click', () => flyTo(lon + 26, lat, fov, 0.6));
+    $('zoomIn').addEventListener('click', () => { anim = null; fov = Math.max(MINFOV, fov - 9); });
+    $('zoomOut').addEventListener('click', () => { anim = null; fov = Math.min(MAXFOV, fov + 9); });
+    $('infoBtn').addEventListener('click', () => { setNavActive('about'); openPanel('about'); });
+    $('autoBtnRef').addEventListener('click', () => { autoRotate = !autoRotate; if (autoRotate) anim = null; updateAutoUI(); });
+    $('musicBtnRef').addEventListener('click', () => {
+      musicOn = !musicOn;
+      $('musicBtnRef').style.background = musicOn ? ACCENT : 'rgba(16,17,20,0.82)';
+      $('musicBtnRef').style.color = musicOn ? '#19140c' : 'rgba(255,255,255,0.85)';
+    });
+    $('panelCloseBtn').addEventListener('click', closePanel);
+    $('panelOverlay').addEventListener('click', closePanel);
+    window.addEventListener('resize', onResize);
+
+    // Wait for THREE then init
+    if (window.THREE) { init(); }
+    else {
+      let t = 0;
+      const iv = setInterval(() => {
+        if (window.THREE) { clearInterval(iv); init(); }
+        else if (++t > 200) clearInterval(iv);
+      }, 50);
+    }
+  });
+})();
+</script>
+</body>
+</html>
